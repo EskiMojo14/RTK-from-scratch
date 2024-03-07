@@ -1,4 +1,10 @@
-import { createContext, useContext } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useReducer,
+  useRef,
+} from "react";
 import { Todo } from ".";
 
 export interface TodoState {
@@ -83,8 +89,20 @@ const store = makeStore();
 
 export const TodoContext = createContext(store);
 
-export const useTodoContext = () => {
-  return useContext(TodoContext).getState();
+export const useTodoSelector = <Selected,>(
+  selector: (state: TodoState) => Selected,
+) => {
+  const { getState, subscribe } = useContext(TodoContext);
+  const selectedRef = useRef<Selected>(selector(getState()));
+  const [, rerender] = useReducer((s) => !s, false);
+  useEffect(() => {
+    const unsubscribe = subscribe(() => {
+      selectedRef.current = selector(getState());
+      rerender();
+    });
+    return unsubscribe;
+  });
+  return selectedRef.current;
 };
 
 export const useTodoDispatch = () => {

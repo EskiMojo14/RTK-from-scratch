@@ -1,10 +1,10 @@
 import { Box, List, Typography } from "@mui/material";
 import { TodoItem } from "./Todo";
 import { Cancel } from "@mui/icons-material";
-import { useTodoContext } from "./context";
+import { useTodoSelector } from "./context";
 
 export function Todos() {
-  const { todos } = useTodoContext();
+  const todos = useTodoSelector((state) => state.todos);
   if (todos.length === 0) {
     return (
       <Box p={2} display="flex" flexDirection="column" alignItems="center">
