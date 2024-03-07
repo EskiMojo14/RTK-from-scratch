@@ -2,7 +2,10 @@ import { createContext, useContext, useSyncExternalStore } from "react";
 import { Todo } from ".";
 
 export interface TodoState {
-  todos: Todo[];
+  todos: {
+    ids: string[];
+    entities: Record<string, Todo>;
+  };
 }
 
 export enum TodoActionType {
@@ -32,32 +35,52 @@ const todoReducer = (state: TodoState, action: TodoAction): TodoState => {
   switch (action.type) {
     case TodoActionType.TODO_ADDED:
       return {
-        todos: [...state.todos, action.payload],
+        todos: {
+          ids: [...state.todos.ids, action.payload.id],
+          entities: {
+            ...state.todos.entities,
+            [action.payload.id]: action.payload,
+          },
+        },
       };
-    case TodoActionType.TODO_DELETED:
+    case TodoActionType.TODO_DELETED: {
+      const entitiesClone = { ...state.todos.entities };
+      delete entitiesClone[action.payload];
       return {
-        todos: state.todos.filter((todo) => todo.id !== action.payload),
+        todos: {
+          ids: state.todos.ids.filter((id) => id !== action.payload),
+          entities: entitiesClone,
+        },
       };
+    }
     case TodoActionType.TODO_TOGGLED:
       return {
-        todos: state.todos.map((todo) =>
-          todo.id === action.payload
-            ? { ...todo, completed: !todo.completed }
-            : todo,
-        ),
+        todos: {
+          ids: state.todos.ids,
+          entities: {
+            ...state.todos.entities,
+            [action.payload]: {
+              ...state.todos.entities[action.payload],
+              completed: !state.todos.entities[action.payload].completed,
+            },
+          },
+        },
       };
     default:
       return state;
   }
 };
 
-export const selectTodos = (state: TodoState) => state.todos;
+export const selectTodoIds = (state: TodoState) => state.todos.ids;
 export const selectTodoById = (state: TodoState, id: string) =>
-  state.todos.find((todo) => todo.id === id);
+  state.todos.entities[id];
 
 const makeStore = () => {
   let state: TodoState = {
-    todos: [],
+    todos: {
+      ids: [],
+      entities: {},
+    },
   };
 
   let listenerId = 0;
