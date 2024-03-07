@@ -1,10 +1,10 @@
 import { Box, List, Typography } from "@mui/material";
 import { TodoItem } from "./Todo";
 import { Cancel } from "@mui/icons-material";
-import { useTodoSelector } from "./context";
+import { selectTodos, useTodoSelector } from "./context";
 
 export function Todos() {
-  const todos = useTodoSelector((state) => state.todos);
+  const todos = useTodoSelector(selectTodos);
   if (todos.length === 0) {
     return (
       <Box p={2} display="flex" flexDirection="column" alignItems="center">
@@ -28,8 +28,8 @@ export function Todos() {
   }
   return (
     <List>
-      {todos.map((todo) => (
-        <TodoItem key={todo.id} todo={todo} />
+      {todos.map(({ id }) => (
+        <TodoItem key={id} id={id} />
       ))}
     </List>
   );

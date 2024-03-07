@@ -51,6 +51,10 @@ const todoReducer = (state: TodoState, action: TodoAction): TodoState => {
   }
 };
 
+export const selectTodos = (state: TodoState) => state.todos;
+export const selectTodoById = (state: TodoState, id: string) =>
+  state.todos.find((todo) => todo.id === id);
+
 const makeStore = () => {
   let state: TodoState = {
     todos: [],

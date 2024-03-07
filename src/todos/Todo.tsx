@@ -6,16 +6,24 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { Todo } from ".";
 import { Delete } from "@mui/icons-material";
-import { TodoActionType, useTodoDispatch } from "./context";
+import {
+  TodoActionType,
+  selectTodoById,
+  useTodoDispatch,
+  useTodoSelector,
+} from "./context";
 
 export interface TodoProps {
-  todo: Todo;
+  id: string;
 }
 
-export function TodoItem({ todo }: TodoProps) {
+export function TodoItem({ id }: TodoProps) {
   const todoDispatch = useTodoDispatch();
+  const todo = useTodoSelector((state) => selectTodoById(state, id));
+  if (!todo) {
+    return null;
+  }
   const labelId = `checkbox-list-label-${todo.id}`;
   return (
     <ListItem
