@@ -1,5 +1,5 @@
 import { nanoid } from "@reduxjs/toolkit";
-import { todoReducer } from "./todos/context";
+import { todoReducer } from "./todos";
 import { createContext, useContext, useSyncExternalStore } from "react";
 
 export interface Action<T extends string = string> {

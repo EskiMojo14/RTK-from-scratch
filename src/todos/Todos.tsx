@@ -1,7 +1,7 @@
 import { Box, List, Typography } from "@mui/material";
 import { TodoItem } from "./Todo";
 import { Cancel } from "@mui/icons-material";
-import { selectTodoIds } from "./context";
+import { selectTodoIds } from ".";
 import { useSelector } from "../store";
 
 export function Todos() {

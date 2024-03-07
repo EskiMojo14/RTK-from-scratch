@@ -1,6 +1,11 @@
-import { Todo } from ".";
 import { nanoid } from "@reduxjs/toolkit";
 import { Reducer, RootState } from "../store";
+
+export interface Todo {
+  id: string;
+  text: string;
+  completed: boolean;
+}
 
 export interface TodoState {
   ids: string[];

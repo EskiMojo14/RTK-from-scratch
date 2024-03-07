@@ -7,7 +7,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
-import { selectTodoById, todoDeleted, todoToggled } from "./context";
+import { selectTodoById, todoDeleted, todoToggled } from ".";
 import { useDispatch, useSelector } from "../store";
 
 export interface TodoProps {
