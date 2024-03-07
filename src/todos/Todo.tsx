@@ -8,13 +8,14 @@ import {
 } from "@mui/material";
 import { Todo } from ".";
 import { Delete } from "@mui/icons-material";
-import { RootStateProps } from "../App";
+import { useSetTodoContext } from "./context";
 
-export interface TodoProps extends RootStateProps {
+export interface TodoProps {
   todo: Todo;
 }
 
-export function TodoItem({ todo, setState }: TodoProps) {
+export function TodoItem({ todo }: TodoProps) {
+  const setTodos = useSetTodoContext();
   const labelId = `checkbox-list-label-${todo.id}`;
   return (
     <ListItem
@@ -24,7 +25,7 @@ export function TodoItem({ todo, setState }: TodoProps) {
           edge="end"
           aria-label="delete"
           onClick={() => {
-            setState((prev) => {
+            setTodos((prev) => {
               return {
                 ...prev,
                 todos: prev.todos.filter((t) => t.id !== todo.id),
@@ -40,7 +41,7 @@ export function TodoItem({ todo, setState }: TodoProps) {
         role={undefined}
         dense
         onClick={() => {
-          setState((prev) => {
+          setTodos((prev) => {
             return {
               ...prev,
               todos: prev.todos.map((t) => {

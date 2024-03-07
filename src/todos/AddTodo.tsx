@@ -10,15 +10,16 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { nanoid } from "@reduxjs/toolkit";
-import { RootStateProps } from "../App";
+import { useSetTodoContext } from "./context";
 
-export interface AddTodoProps extends RootStateProps {}
+export interface AddTodoProps {}
 
-export function AddTodo({ setState }: AddTodoProps) {
+export function AddTodo() {
+  const setTodos = useSetTodoContext();
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
   const handleSubmit = () => {
-    setState((prev) => {
+    setTodos((prev) => {
       return {
         ...prev,
         todos: [

@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import { grey, teal } from "@mui/material/colors";
+import { TodoProvider } from "./todos/context.tsx";
 
 const theme = createTheme({
   palette: {
@@ -29,7 +30,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <App />
+      <TodoProvider>
+        <App />
+      </TodoProvider>
     </ThemeProvider>
   </React.StrictMode>,
 );

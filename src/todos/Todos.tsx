@@ -1,14 +1,10 @@
 import { Box, List, Typography } from "@mui/material";
 import { TodoItem } from "./Todo";
-import { RootStateProps } from "../App";
 import { Cancel } from "@mui/icons-material";
+import { useTodoContext } from "./context";
 
-export interface TodosProps extends RootStateProps {}
-
-export function Todos(props: TodosProps) {
-  const {
-    state: { todos },
-  } = props;
+export function Todos() {
+  const { todos } = useTodoContext();
   if (todos.length === 0) {
     return (
       <Box p={2} display="flex" flexDirection="column" alignItems="center">
@@ -33,7 +29,7 @@ export function Todos(props: TodosProps) {
   return (
     <List>
       {todos.map((todo) => (
-        <TodoItem key={todo.id} todo={todo} {...props} />
+        <TodoItem key={todo.id} todo={todo} />
       ))}
     </List>
   );
