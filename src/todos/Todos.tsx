@@ -1,10 +1,22 @@
-import { List } from "@mui/material";
+import { Box, List, Typography } from "@mui/material";
 import { useRootState, useSetRootState } from "../context";
 import { TodoItem } from "./Todo";
 
 export function Todos() {
   const { todos } = useRootState();
   const setRootState = useSetRootState();
+  if (todos.length === 0) {
+    return (
+      <Box sx={{ p: 2 }} display="flex" justifyContent="center">
+        <Typography
+          variant="subtitle1"
+          sx={{ color: (theme) => theme.palette.text.secondary }}
+        >
+          No todos
+        </Typography>
+      </Box>
+    );
+  }
   return (
     <List>
       {todos.map((todo) => (
