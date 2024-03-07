@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useReducer,
-  useRef,
-} from "react";
+import { createContext, useContext, useSyncExternalStore } from "react";
 import { Todo } from ".";
 
 export interface TodoState {
@@ -93,16 +87,7 @@ export const useTodoSelector = <Selected,>(
   selector: (state: TodoState) => Selected,
 ) => {
   const { getState, subscribe } = useContext(TodoContext);
-  const selectedRef = useRef<Selected>(selector(getState()));
-  const [, rerender] = useReducer((s) => !s, false);
-  useEffect(() => {
-    const unsubscribe = subscribe(() => {
-      selectedRef.current = selector(getState());
-      rerender();
-    });
-    return unsubscribe;
-  });
-  return selectedRef.current;
+  return useSyncExternalStore(subscribe, () => selector(getState()));
 };
 
 export const useTodoDispatch = () => {
