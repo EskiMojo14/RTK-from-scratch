@@ -10,27 +10,22 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { nanoid } from "@reduxjs/toolkit";
-import { useSetTodoContext } from "./context";
+import { TodoActionType, useTodoDispatch } from "./context";
 
 export interface AddTodoProps {}
 
 export function AddTodo() {
-  const setTodos = useSetTodoContext();
+  const todoDispatch = useTodoDispatch();
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
   const handleSubmit = () => {
-    setTodos((prev) => {
-      return {
-        ...prev,
-        todos: [
-          ...prev.todos,
-          {
-            id: nanoid(),
-            text,
-            completed: false,
-          },
-        ],
-      };
+    todoDispatch({
+      type: TodoActionType.TODO_ADDED,
+      payload: {
+        id: nanoid(),
+        text,
+        completed: false,
+      },
     });
     setOpen(false);
     setText("");

@@ -8,14 +8,14 @@ import {
 } from "@mui/material";
 import { Todo } from ".";
 import { Delete } from "@mui/icons-material";
-import { useSetTodoContext } from "./context";
+import { TodoActionType, useTodoDispatch } from "./context";
 
 export interface TodoProps {
   todo: Todo;
 }
 
 export function TodoItem({ todo }: TodoProps) {
-  const setTodos = useSetTodoContext();
+  const todoDispatch = useTodoDispatch();
   const labelId = `checkbox-list-label-${todo.id}`;
   return (
     <ListItem
@@ -25,11 +25,9 @@ export function TodoItem({ todo }: TodoProps) {
           edge="end"
           aria-label="delete"
           onClick={() => {
-            setTodos((prev) => {
-              return {
-                ...prev,
-                todos: prev.todos.filter((t) => t.id !== todo.id),
-              };
+            todoDispatch({
+              type: TodoActionType.TODO_DELETED,
+              payload: todo.id,
             });
           }}
         >
@@ -41,16 +39,9 @@ export function TodoItem({ todo }: TodoProps) {
         role={undefined}
         dense
         onClick={() => {
-          setTodos((prev) => {
-            return {
-              ...prev,
-              todos: prev.todos.map((t) => {
-                if (t.id === todo.id) {
-                  return { ...t, completed: !t.completed };
-                }
-                return t;
-              }),
-            };
+          todoDispatch({
+            type: TodoActionType.TODO_TOGGLED,
+            payload: todo.id,
           });
         }}
       >
