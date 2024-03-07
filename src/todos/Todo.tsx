@@ -8,8 +8,9 @@ import {
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 import {
-  TodoActionType,
   selectTodoById,
+  todoDeleted,
+  todoToggled,
   useTodoDispatch,
   useTodoSelector,
 } from "./context";
@@ -33,10 +34,7 @@ export function TodoItem({ id }: TodoProps) {
           edge="end"
           aria-label="delete"
           onClick={() => {
-            todoDispatch({
-              type: TodoActionType.TODO_DELETED,
-              payload: todo.id,
-            });
+            todoDispatch(todoDeleted(todo.id));
           }}
         >
           <Delete />
@@ -47,10 +45,7 @@ export function TodoItem({ id }: TodoProps) {
         role={undefined}
         dense
         onClick={() => {
-          todoDispatch({
-            type: TodoActionType.TODO_TOGGLED,
-            payload: todo.id,
-          });
+          todoDispatch(todoToggled(todo.id));
         }}
       >
         <ListItemIcon>

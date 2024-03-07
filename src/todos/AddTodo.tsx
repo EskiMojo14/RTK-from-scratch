@@ -9,8 +9,7 @@ import {
   TextField,
 } from "@mui/material";
 import { useState } from "react";
-import { nanoid } from "@reduxjs/toolkit";
-import { TodoActionType, useTodoDispatch } from "./context";
+import { todoAdded, useTodoDispatch } from "./context";
 
 export interface AddTodoProps {}
 
@@ -19,14 +18,7 @@ export function AddTodo() {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
   const handleSubmit = () => {
-    todoDispatch({
-      type: TodoActionType.TODO_ADDED,
-      payload: {
-        id: nanoid(),
-        text,
-        completed: false,
-      },
-    });
+    todoDispatch(todoAdded(text));
     setOpen(false);
     setText("");
   };

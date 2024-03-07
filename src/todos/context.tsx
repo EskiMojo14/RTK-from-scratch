@@ -1,5 +1,6 @@
 import { createContext, useContext, useSyncExternalStore } from "react";
 import { Todo } from ".";
+import { nanoid } from "@reduxjs/toolkit";
 
 export interface TodoState {
   todos: {
@@ -8,28 +9,34 @@ export interface TodoState {
   };
 }
 
-export enum TodoActionType {
+enum TodoActionType {
   TODO_ADDED = "TODO_ADDED",
   TODO_DELETED = "TODO_DELETED",
   TODO_TOGGLED = "TODO_TOGGLED",
 }
 
-type TodoAddedAction = {
-  type: TodoActionType.TODO_ADDED;
-  payload: Todo;
-};
+export const todoAdded = (text: string) => ({
+  type: TodoActionType.TODO_ADDED as const,
+  payload: {
+    id: nanoid(),
+    text,
+    completed: false,
+  } satisfies Todo,
+});
 
-type TodoDeletedAction = {
-  type: TodoActionType.TODO_DELETED;
-  payload: string;
-};
+export const todoDeleted = (id: string) => ({
+  type: TodoActionType.TODO_DELETED as const,
+  payload: id,
+});
 
-type TodoToggledAction = {
-  type: TodoActionType.TODO_TOGGLED;
-  payload: string;
-};
+export const todoToggled = (id: string) => ({
+  type: TodoActionType.TODO_TOGGLED as const,
+  payload: id,
+});
 
-type TodoAction = TodoAddedAction | TodoDeletedAction | TodoToggledAction;
+type TodoAction = ReturnType<
+  typeof todoAdded | typeof todoDeleted | typeof todoToggled
+>;
 
 const todoReducer = (state: TodoState, action: TodoAction): TodoState => {
   switch (action.type) {
