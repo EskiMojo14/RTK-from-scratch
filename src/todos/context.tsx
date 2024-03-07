@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer } from "react";
+import { createContext, useContext } from "react";
 import { Todo } from ".";
 
 export interface TodoState {
@@ -51,24 +51,46 @@ const todoReducer = (state: TodoState, action: TodoAction): TodoState => {
   }
 };
 
-const todoContext = createContext<TodoState>({
-  todos: [],
-});
+const makeStore = () => {
+  let state: TodoState = {
+    todos: [],
+  };
 
-export const useTodoContext = () => useContext(todoContext);
+  let listenerId = 0;
+  const listeners = new Map<number, () => void>();
 
-const todoDispatchContext = createContext<React.Dispatch<TodoAction>>(() => {});
+  function getState() {
+    return state;
+  }
 
-export const useTodoDispatch = () => useContext(todoDispatchContext);
+  function dispatch(action: TodoAction) {
+    state = todoReducer(state, action);
+    listeners.forEach((listener) => listener());
+  }
 
-export function TodoProvider({ children }: { children: React.ReactNode }) {
-  const [todos, setTodos] = useReducer(todoReducer, { todos: [] });
+  function subscribe(listener: () => void) {
+    const id = listenerId++;
+    listeners.set(id, listener);
+    return () => {
+      listeners.delete(id);
+    };
+  }
 
-  return (
-    <todoContext.Provider value={todos}>
-      <todoDispatchContext.Provider value={setTodos}>
-        {children}
-      </todoDispatchContext.Provider>
-    </todoContext.Provider>
-  );
-}
+  return { getState, dispatch, subscribe };
+};
+
+const store = makeStore();
+
+export const TodoContext = createContext(store);
+
+export const useTodoContext = () => {
+  return useContext(TodoContext).getState();
+};
+
+export const useTodoDispatch = () => {
+  return useContext(TodoContext).dispatch;
+};
+
+export const TodoProvider = ({ children }: { children: React.ReactNode }) => {
+  return <TodoContext.Provider value={store}>{children}</TodoContext.Provider>;
+};
