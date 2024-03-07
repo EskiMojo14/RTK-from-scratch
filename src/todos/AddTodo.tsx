@@ -9,16 +9,17 @@ import {
   TextField,
 } from "@mui/material";
 import { useState } from "react";
-import { todoAdded, useTodoDispatch } from "./context";
+import { todoAdded } from "./context";
+import { useDispatch } from "../store";
 
 export interface AddTodoProps {}
 
 export function AddTodo() {
-  const todoDispatch = useTodoDispatch();
+  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
   const handleSubmit = () => {
-    todoDispatch(todoAdded(text));
+    dispatch(todoAdded(text));
     setOpen(false);
     setText("");
   };
