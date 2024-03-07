@@ -2,10 +2,10 @@ import { Box, List, Typography } from "@mui/material";
 import { TodoItem } from "./Todo";
 import { Cancel } from "@mui/icons-material";
 import { selectTodoIds } from ".";
-import { useSelector } from "../store";
+import { useAppSelector } from "../store";
 
 export function Todos() {
-  const todos = useSelector(selectTodoIds);
+  const todos = useAppSelector(selectTodoIds);
   if (todos.length === 0) {
     return (
       <Box p={2} display="flex" flexDirection="column" alignItems="center">

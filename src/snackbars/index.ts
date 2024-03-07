@@ -1,32 +1,27 @@
-import { Reducer, RootState } from "../store";
-import { TodoAction, TodoActionType } from "../todos";
+import { createSlice } from "@reduxjs/toolkit";
+import { todoAdded } from "../todos";
 
 export interface Snackbar {
   message: string;
 }
-
-enum SnackbarActionType {
-  SNACKBAR_CLOSED = "SNACKBAR_CLOSED",
-}
-
-export const snackbarClosed = () => ({
-  type: SnackbarActionType.SNACKBAR_CLOSED as const,
+export const snackbarSlice = createSlice({
+  name: "snackbars",
+  initialState: [] as string[],
+  reducers: {
+    snackbarClosed(state) {
+      state.shift();
+    },
+  },
+  extraReducers(builder) {
+    builder.addCase(todoAdded, (state, action) => {
+      state.push(`Todo added: "${action.payload.text}"`);
+    });
+  },
+  selectors: {
+    selectFirstSnackbar: (snackbars) => snackbars[0],
+  },
 });
 
-type SnackbarAction = ReturnType<typeof snackbarClosed>;
+export const { snackbarClosed } = snackbarSlice.actions;
 
-export const snackbarReducer: Reducer<string[], SnackbarAction | TodoAction> = (
-  state = [],
-  action,
-) => {
-  switch (action.type) {
-    case TodoActionType.TODO_ADDED:
-      return [...state, `Todo added: "${action.payload.text}"`];
-    case SnackbarActionType.SNACKBAR_CLOSED:
-      return state.slice(1);
-    default:
-      return state;
-  }
-};
-
-export const selectFirstSnackbar = (state: RootState) => state.snackbars[0];
+export const { selectFirstSnackbar } = snackbarSlice.selectors;

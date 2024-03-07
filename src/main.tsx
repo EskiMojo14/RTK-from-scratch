@@ -1,9 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
+import App from "./App";
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import { grey, teal } from "@mui/material/colors";
-import { StoreProvider } from "./store.tsx";
+import { store } from "./store";
+import { Provider } from "react-redux";
 
 const theme = createTheme({
   palette: {
@@ -30,9 +31,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <StoreProvider>
+      <Provider store={store}>
         <App />
-      </StoreProvider>
+      </Provider>
     </ThemeProvider>
   </React.StrictMode>,
 );

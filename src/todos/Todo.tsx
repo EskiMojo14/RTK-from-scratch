@@ -8,15 +8,15 @@ import {
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 import { selectTodoById, todoDeleted, todoToggled } from ".";
-import { useDispatch, useSelector } from "../store";
+import { useAppDispatch, useAppSelector } from "../store";
 
 export interface TodoProps {
   id: string;
 }
 
 export function TodoItem({ id }: TodoProps) {
-  const todoDispatch = useDispatch();
-  const todo = useSelector((state) => selectTodoById(state, id));
+  const todoDispatch = useAppDispatch();
+  const todo = useAppSelector((state) => selectTodoById(state, id));
   if (!todo) {
     return null;
   }

@@ -10,12 +10,12 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { todoAdded } from ".";
-import { useDispatch } from "../store";
+import { useAppDispatch } from "../store";
 
 export interface AddTodoProps {}
 
 export function AddTodo() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
   const handleSubmit = () => {

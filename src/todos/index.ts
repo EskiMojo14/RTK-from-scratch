@@ -1,5 +1,4 @@
-import { nanoid } from "@reduxjs/toolkit";
-import { Reducer, RootState } from "../store";
+import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
 
 export interface Todo {
   id: string;
@@ -12,75 +11,43 @@ export interface TodoState {
   entities: Record<string, Todo>;
 }
 
-export enum TodoActionType {
-  TODO_ADDED = "TODO_ADDED",
-  TODO_DELETED = "TODO_DELETED",
-  TODO_TOGGLED = "TODO_TOGGLED",
-}
-
-export const todoAdded = (text: string) => ({
-  type: TodoActionType.TODO_ADDED as const,
-  payload: {
-    id: nanoid(),
-    text,
-    completed: false,
-  } satisfies Todo,
-});
-
-export const todoDeleted = (id: string) => ({
-  type: TodoActionType.TODO_DELETED as const,
-  payload: id,
-});
-
-export const todoToggled = (id: string) => ({
-  type: TodoActionType.TODO_TOGGLED as const,
-  payload: id,
-});
-
-export type TodoAction = ReturnType<
-  typeof todoAdded | typeof todoDeleted | typeof todoToggled
->;
-
-export const todoReducer: Reducer<TodoState, TodoAction> = (
-  state = {
+export const todoSlice = createSlice({
+  name: "todos",
+  initialState: {
     ids: [],
     entities: {},
+  } as TodoState,
+  reducers: {
+    todoAdded: {
+      prepare: (text: string) => ({
+        payload: {
+          id: nanoid(),
+          text,
+          completed: false,
+        } satisfies Todo,
+      }),
+      reducer(state, action: PayloadAction<Todo>) {
+        state.ids.push(action.payload.id);
+        state.entities[action.payload.id] = action.payload;
+      },
+    },
+    todoDeleted(state, action: PayloadAction<string>) {
+      delete state.entities[action.payload];
+      state.ids = state.ids.filter((id) => id !== action.payload);
+    },
+    todoToggled(state, action: PayloadAction<string>) {
+      const todo = state.entities[action.payload];
+      if (todo) {
+        todo.completed = !todo.completed;
+      }
+    },
   },
-  action,
-) => {
-  switch (action.type) {
-    case TodoActionType.TODO_ADDED:
-      return {
-        ids: [...state.ids, action.payload.id],
-        entities: {
-          ...state.entities,
-          [action.payload.id]: action.payload,
-        },
-      };
-    case TodoActionType.TODO_DELETED: {
-      const entitiesClone = { ...state.entities };
-      delete entitiesClone[action.payload];
-      return {
-        ids: state.ids.filter((id) => id !== action.payload),
-        entities: entitiesClone,
-      };
-    }
-    case TodoActionType.TODO_TOGGLED:
-      return {
-        ids: state.ids,
-        entities: {
-          ...state.entities,
-          [action.payload]: {
-            ...state.entities[action.payload]!,
-            completed: !state.entities[action.payload]!.completed,
-          },
-        },
-      };
-    default:
-      return state;
-  }
-};
+  selectors: {
+    selectTodoIds: (state) => state.ids,
+    selectTodoById: (state, id: string) => state.entities[id],
+  },
+});
 
-export const selectTodoIds = (state: RootState) => state.todos.ids;
-export const selectTodoById = (state: RootState, id: string) =>
-  state.todos.entities[id];
+export const { todoAdded, todoDeleted, todoToggled } = todoSlice.actions;
+
+export const { selectTodoIds, selectTodoById } = todoSlice.selectors;
