@@ -12,7 +12,7 @@ export interface TodoState {
   entities: Record<string, Todo>;
 }
 
-enum TodoActionType {
+export enum TodoActionType {
   TODO_ADDED = "TODO_ADDED",
   TODO_DELETED = "TODO_DELETED",
   TODO_TOGGLED = "TODO_TOGGLED",
@@ -37,7 +37,7 @@ export const todoToggled = (id: string) => ({
   payload: id,
 });
 
-type TodoAction = ReturnType<
+export type TodoAction = ReturnType<
   typeof todoAdded | typeof todoDeleted | typeof todoToggled
 >;
 
@@ -71,8 +71,8 @@ export const todoReducer: Reducer<TodoState, TodoAction> = (
         entities: {
           ...state.entities,
           [action.payload]: {
-            ...state.entities[action.payload],
-            completed: !state.entities[action.payload].completed,
+            ...state.entities[action.payload]!,
+            completed: !state.entities[action.payload]!.completed,
           },
         },
       };

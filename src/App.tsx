@@ -1,11 +1,7 @@
 import { AppBar, Container, Paper, Toolbar, Typography } from "@mui/material";
 import { AddTodo } from "./todos/AddTodo";
 import { Todos } from "./todos/Todos";
-import { Todo } from "./todos";
-
-export interface RootState {
-  todos: Todo[];
-}
+import { CurrentSnackbar } from "./snackbars/Snackbar";
 
 function App() {
   return (
@@ -21,6 +17,7 @@ function App() {
         </Paper>
       </Container>
       <AddTodo />
+      <CurrentSnackbar />
     </>
   );
 }

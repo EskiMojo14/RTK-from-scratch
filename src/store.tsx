@@ -1,6 +1,7 @@
 import { nanoid } from "@reduxjs/toolkit";
 import { todoReducer } from "./todos";
 import { createContext, useContext, useSyncExternalStore } from "react";
+import { snackbarReducer } from "./snackbars";
 
 export interface Action<T extends string = string> {
   type: T;
@@ -29,6 +30,7 @@ function combineReducers<State extends Record<string, any>>(reducers: {
 
 const combinedReducer = combineReducers({
   todos: todoReducer,
+  snackbars: snackbarReducer,
 });
 
 export type RootState = ReturnType<typeof combinedReducer>;
