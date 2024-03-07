@@ -1,4 +1,9 @@
-import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
+import {
+  createEntityAdapter,
+  createSlice,
+  nanoid,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 
 export interface Todo {
   id: string;
@@ -6,17 +11,11 @@ export interface Todo {
   completed: boolean;
 }
 
-export interface TodoState {
-  ids: string[];
-  entities: Record<string, Todo>;
-}
+const todoAdapter = createEntityAdapter<Todo>();
 
 export const todoSlice = createSlice({
   name: "todos",
-  initialState: {
-    ids: [],
-    entities: {},
-  } as TodoState,
+  initialState: todoAdapter.getInitialState(),
   reducers: {
     todoAdded: {
       prepare: (text: string) => ({
@@ -26,15 +25,9 @@ export const todoSlice = createSlice({
           completed: false,
         } satisfies Todo,
       }),
-      reducer(state, action: PayloadAction<Todo>) {
-        state.ids.push(action.payload.id);
-        state.entities[action.payload.id] = action.payload;
-      },
+      reducer: todoAdapter.addOne,
     },
-    todoDeleted(state, action: PayloadAction<string>) {
-      delete state.entities[action.payload];
-      state.ids = state.ids.filter((id) => id !== action.payload);
-    },
+    todoDeleted: todoAdapter.removeOne,
     todoToggled(state, action: PayloadAction<string>) {
       const todo = state.entities[action.payload];
       if (todo) {
@@ -43,11 +36,11 @@ export const todoSlice = createSlice({
     },
   },
   selectors: {
-    selectTodoIds: (state) => state.ids,
-    selectTodoById: (state, id: string) => state.entities[id],
+    ...todoAdapter.getSelectors(),
   },
 });
 
 export const { todoAdded, todoDeleted, todoToggled } = todoSlice.actions;
 
-export const { selectTodoIds, selectTodoById } = todoSlice.selectors;
+export const { selectIds: selectTodoIds, selectById: selectTodoById } =
+  todoSlice.selectors;
