@@ -1,5 +1,6 @@
-import { AppBar, Toolbar, Typography } from "@mui/material";
-import { useState } from "react";
+import { AppBar, Container, Toolbar, Typography } from "@mui/material";
+import { AddTodo } from "./todos/AddTodo";
+import { Todos } from "./todos/Todos";
 
 function App() {
   return (
@@ -9,6 +10,10 @@ function App() {
           <Typography variant="h6">Todos</Typography>
         </Toolbar>
       </AppBar>
+      <Container maxWidth="sm">
+        <Todos />
+      </Container>
+      <AddTodo />
     </>
   );
 }
