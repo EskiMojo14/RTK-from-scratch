@@ -8,16 +8,17 @@ import {
   Fab,
   TextField,
 } from "@mui/material";
-import { useSetRootState } from "../context";
 import { useState } from "react";
 import { nanoid } from "@reduxjs/toolkit";
+import { RootStateProps } from "../App";
 
-export function AddTodo() {
+export interface AddTodoProps extends RootStateProps {}
+
+export function AddTodo({ setState }: AddTodoProps) {
   const [open, setOpen] = useState(false);
-  const setRootState = useSetRootState();
   const [text, setText] = useState("");
   const handleSubmit = () => {
-    setRootState((prev) => {
+    setState((prev) => {
       return {
         ...prev,
         todos: [

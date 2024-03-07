@@ -8,20 +8,30 @@ import {
 } from "@mui/material";
 import { Todo } from ".";
 import { Delete } from "@mui/icons-material";
+import { RootStateProps } from "../App";
 
-export interface TodoProps {
+export interface TodoProps extends RootStateProps {
   todo: Todo;
-  onCompletedChange: () => void;
-  onDelete: () => void;
 }
 
-export function TodoItem({ todo, onCompletedChange, onDelete }: TodoProps) {
+export function TodoItem({ todo, setState }: TodoProps) {
   const labelId = `checkbox-list-label-${todo.id}`;
   return (
     <ListItem
       disablePadding
       secondaryAction={
-        <IconButton edge="end" aria-label="delete" onClick={onDelete}>
+        <IconButton
+          edge="end"
+          aria-label="delete"
+          onClick={() => {
+            setState((prev) => {
+              return {
+                ...prev,
+                todos: prev.todos.filter((t) => t.id !== todo.id),
+              };
+            });
+          }}
+        >
           <Delete />
         </IconButton>
       }
@@ -29,7 +39,19 @@ export function TodoItem({ todo, onCompletedChange, onDelete }: TodoProps) {
       <ListItemButton
         role={undefined}
         dense
-        onClick={() => onCompletedChange()}
+        onClick={() => {
+          setState((prev) => {
+            return {
+              ...prev,
+              todos: prev.todos.map((t) => {
+                if (t.id === todo.id) {
+                  return { ...t, completed: !t.completed };
+                }
+                return t;
+              }),
+            };
+          });
+        }}
       >
         <ListItemIcon>
           <Checkbox

@@ -1,10 +1,13 @@
 import { Box, List, Typography } from "@mui/material";
-import { useRootState, useSetRootState } from "../context";
 import { TodoItem } from "./Todo";
+import { RootStateProps } from "../App";
 
-export function Todos() {
-  const { todos } = useRootState();
-  const setRootState = useSetRootState();
+export interface TodosProps extends RootStateProps {}
+
+export function Todos(props: TodosProps) {
+  const {
+    state: { todos },
+  } = props;
   if (todos.length === 0) {
     return (
       <Box sx={{ p: 2 }} display="flex" justifyContent="center">
@@ -20,31 +23,7 @@ export function Todos() {
   return (
     <List>
       {todos.map((todo) => (
-        <TodoItem
-          key={todo.id}
-          todo={todo}
-          onCompletedChange={() => {
-            setRootState((prev) => {
-              return {
-                ...prev,
-                todos: prev.todos.map((t) => {
-                  if (t.id === todo.id) {
-                    return { ...t, completed: !t.completed };
-                  }
-                  return t;
-                }),
-              };
-            });
-          }}
-          onDelete={() => {
-            setRootState((prev) => {
-              return {
-                ...prev,
-                todos: prev.todos.filter((t) => t.id !== todo.id),
-              };
-            });
-          }}
-        />
+        <TodoItem key={todo.id} todo={todo} {...props} />
       ))}
     </List>
   );
